@@ -21,6 +21,52 @@ public class TopRatedAdapter extends RecyclerView.Adapter<TopRatedAdapter.MyView
     private Context mContext;
     private List<TopRated> albumList;
 
+    final private TopRatedAdapterOnClickHandler mClickHandler;
+
+    public TopRatedAdapter(Context context,List<TopRated> movieList, TopRatedAdapterOnClickHandler clickHandler) {
+        mContext = context;
+        mClickHandler = clickHandler;
+        albumList = movieList;
+    }
+
+
+
+    public interface TopRatedAdapterOnClickHandler {
+        void onTopRatedClick(String movieId);
+    }
+
+
+
+
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        final TextView title;
+        final ImageView poster;
+
+        public MyViewHolder(View view){
+            super(view);
+            poster = (ImageView) view.findViewById(R.id.iv_MoviePoster);
+            title = (TextView) view.findViewById(R.id.title);
+
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+
+            String movieId = albumList.get(adapterPosition).getMovieID();
+
+            mClickHandler.onTopRatedClick(movieId);
+        }
+    }
+
+
+
+
+
+
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -45,20 +91,9 @@ public class TopRatedAdapter extends RecyclerView.Adapter<TopRatedAdapter.MyView
 
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
-        public ImageView poster;
-        public MyViewHolder(View view){
-            super(view);
-            poster = (ImageView) view.findViewById(R.id.iv_MoviePoster);
-            title = (TextView) view.findViewById(R.id.title);
-        }
-    }
 
-    public TopRatedAdapter(Context context, List<TopRated> moviesList) {
-        mContext = context;
-        albumList = moviesList;
-    }
+
+
 
     public void updateList(List<TopRated> newList){
         albumList.clear();

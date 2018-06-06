@@ -1,19 +1,18 @@
 package com.example.rahul.moviestv.Data;
 
-public class TopRated {
+public class ParticularMovie {
+
     private String name;
     private final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
     private String imagePath;
     private String movieID;
+    private String backdropImagepath;
 
-    public TopRated(){
+
+    public ParticularMovie(){
 
     }
 
-    public TopRated(String name, String imagePath){
-        this.name = name;
-        this.imagePath = imagePath;
-    }
 
     public String getName() {
         return name;
@@ -27,8 +26,16 @@ public class TopRated {
         this.imagePath = imagePath;
     }
 
+    public void setBackdropImagepath(String backdropImagepath) {
+        this.backdropImagepath = backdropImagepath;
+    }
+
     public String getImageURl() {
         return IMAGE_BASE_URL + imagePath;
+    }
+
+    public String getBackdropImageUrl() {
+        return IMAGE_BASE_URL + backdropImagepath;
     }
 
     public void setMovieID(String movieID){

@@ -21,11 +21,20 @@ public class NetworkCallUtils {
 
     private static final String TOP_RATED_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated";
 
+    private static final String PARTICULAR_MOVIE_URL = "https://api.themoviedb.org/3/movie";
+
 
 
     private static final String APPID_PARAM = "api_key";
     private static final String LANGUAGE_PARAM = "language";
     private static final String PAGE_PARAM = "page";
+
+
+
+
+
+
+
 
     public static URL getUrlforTopRated(Context context, int pageNo){
 
@@ -45,7 +54,28 @@ public class NetworkCallUtils {
         }
     }
 
+
+
+    public static URL getUrlforParticularMovie(String movieId){
+        Uri particularMovieUri = Uri.parse(PARTICULAR_MOVIE_URL+"/"+movieId).buildUpon()
+                .appendQueryParameter(APPID_PARAM, APPID1)
+                .appendQueryParameter(LANGUAGE_PARAM, "en-US")
+                .build();
+        try {
+            URL particularMovieUrl = new URL(particularMovieUri.toString());
+            Log.v(TAG, "URL: " + particularMovieUrl);
+            return particularMovieUrl;
+        } catch (MalformedURLException e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+
     public static String getResponseFromHttpUrl(Context context, URL url) throws IOException {
+
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         try {
@@ -61,9 +91,11 @@ public class NetworkCallUtils {
                 response = scanner.next();
             }
             scanner.close();
+            Log.v("Response", response);
             return response;
-        } finally {
-            urlConnection.disconnect();
+        }finally {
+            if(urlConnection!=null)
+                urlConnection.disconnect();
         }
     }
 

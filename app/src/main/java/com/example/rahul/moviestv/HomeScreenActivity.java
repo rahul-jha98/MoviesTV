@@ -1,6 +1,7 @@
 package com.example.rahul.moviestv;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeScreenActivity extends AppCompatActivity{
+public class HomeScreenActivity extends AppCompatActivity implements TopRatedAdapter.TopRatedAdapterOnClickHandler{
 
     private Context mContext;
     private RecyclerView topRatedRecyclerView;
@@ -39,7 +40,7 @@ public class HomeScreenActivity extends AppCompatActivity{
         topRatedRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         movieList = new ArrayList<>();
-        topRatedAdapter = new TopRatedAdapter(this, movieList);
+        topRatedAdapter = new TopRatedAdapter(this,movieList, this);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,   false);
         topRatedRecyclerView.setLayoutManager(mLayoutManager);
@@ -52,17 +53,38 @@ public class HomeScreenActivity extends AppCompatActivity{
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public void onTopRatedClick(String movieId) {
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra("MovieId", movieId);
+        startActivity(intent);
+    }
+
+
     private class GetTopRatedTask extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {
             URL url = NetworkCallUtils.getUrlforTopRated(mContext, 1);
             String json = null;
+
             try {
                 json = NetworkCallUtils.getResponseFromHttpUrl(mContext, url);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
 
             try {
                 movieList = PopularMovieJsonUtils.getTopMoviesStringsFromJson(mContext, json);
@@ -77,6 +99,8 @@ public class HomeScreenActivity extends AppCompatActivity{
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if(movieList == null)
+                return;
             Log.v("Changed","I have changed" + movieList.size());
             topRatedAdapter.updateList(movieList);
 
