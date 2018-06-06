@@ -31,6 +31,11 @@ public class HomeScreenActivity extends AppCompatActivity implements TopRatedAda
     private TopRatedAdapter topRatedAdapter;
     private List<TopRated> movieList;
 
+    GetTopRatedTask task1;
+
+    private boolean loading;
+    private int pageNo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +47,46 @@ public class HomeScreenActivity extends AppCompatActivity implements TopRatedAda
         movieList = new ArrayList<>();
         topRatedAdapter = new TopRatedAdapter(this,movieList, this);
 
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,   false);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,   false);
         topRatedRecyclerView.setLayoutManager(mLayoutManager);
         topRatedRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        GetTopRatedTask task1 = new GetTopRatedTask();
-        task1.execute();
+
+        pageNo = 1;
+
+        task1 = new GetTopRatedTask();
+        task1.execute(pageNo);
 
         topRatedRecyclerView.setAdapter(topRatedAdapter);
+
+
+        loading = true;
+
+
+        topRatedRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dx > 0) //check for scroll down
+                {
+                    int visibleItemCount = mLayoutManager.getChildCount();
+                    int totalItemCount = mLayoutManager.getItemCount();
+                    int pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount-5)
+                        {
+                            loading = false;
+                            Log.v("...", "Last Item Wow !");
+                            task1 = new GetTopRatedTask();
+                            task1.execute(++pageNo);
+                        }
+                    }
+                }
+            }
+        });
     }
 
 
@@ -72,11 +109,11 @@ public class HomeScreenActivity extends AppCompatActivity implements TopRatedAda
     }
 
 
-    private class GetTopRatedTask extends AsyncTask<Void, Void, Void>{
+    private class GetTopRatedTask extends AsyncTask<Integer, Void, Void>{
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            URL url = NetworkCallUtils.getUrlforTopRated(mContext, 1);
+        protected Void doInBackground(Integer... pages) {
+            URL url = NetworkCallUtils.getUrlforTopRated(mContext, pages[0]);
             String json = null;
 
             try {
@@ -103,7 +140,7 @@ public class HomeScreenActivity extends AppCompatActivity implements TopRatedAda
                 return;
             Log.v("Changed","I have changed" + movieList.size());
             topRatedAdapter.updateList(movieList);
-
+            loading = true;
         }
     }
 

@@ -96,7 +96,6 @@ public class TopRatedAdapter extends RecyclerView.Adapter<TopRatedAdapter.MyView
 
 
     public void updateList(List<TopRated> newList){
-        albumList.clear();
         albumList.addAll(newList);
         this.notifyDataSetChanged();
     }

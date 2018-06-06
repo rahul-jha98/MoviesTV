@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="120dp"
-    android:layout_height="234dp"
+    android:layout_height="252dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp">
 
@@ -26,13 +26,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="10"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher"/>
+                android:scaleType="fitXY"
+                tools:src="@mipmap/ic_launcher"/>
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3">
+                android:layout_weight="4">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
